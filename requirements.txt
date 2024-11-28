@@ -3,3 +3,4 @@
 # Core Dependencies
 numpy>=1.23.5
 opencv-python>=4.1.1
+mediapipe>=0.10.0
