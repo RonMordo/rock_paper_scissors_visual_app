@@ -5,7 +5,14 @@ import random
 import time
 import math
 
-# Initialize Mediapipe Hand Landmarker
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 1000
+SCREEN_CENTER_X = 1920 // 2
+SCREEN_CENTER_Y = 1080 // 2
+STREAM_WIDTH = 1000
+STREAM_HEIGHT = 800 
+
+    # Initialize Mediapipe Hand Landmarker
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(
     model_complexity=1,
@@ -133,7 +140,7 @@ while True:
     # Display the menu
     if not countdown_active and not result_screen_active:
         cv2.putText(frame, "Press 's' to start, 'q' to quit", (10, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
 
     # Handle countdown overlay
     if countdown_active:
@@ -169,9 +176,13 @@ while True:
             cv2.putText(result_screen, "Press 'r' to return, 'q' to quit", (50, 550),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
             result_screen_active = True
-
+    
     # Show result screen if active
     if result_screen_active:
+        # Resize and center the result window
+        cv2.namedWindow("Result", cv2.WINDOW_NORMAL)
+        cv2.resizeWindow("Result", WINDOW_WIDTH, WINDOW_HEIGHT)
+        cv2.moveWindow("Result", SCREEN_CENTER_X - WINDOW_WIDTH // 2, SCREEN_CENTER_Y - WINDOW_HEIGHT // 2)
         cv2.imshow("Result", result_screen)
         key = cv2.waitKey(1) & 0xFF
         if key == ord('r'):  # Return to stream
@@ -181,8 +192,13 @@ while True:
             break
         continue
 
-    # Show the webcam feed
-    cv2.imshow("Rock Paper Scissors", frame)
+    cv2.namedWindow("Rock Paper Scissors", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("Rock Paper Scissors", STREAM_WIDTH, STREAM_HEIGHT)
+    cv2.moveWindow("Rock Paper Scissors", SCREEN_CENTER_X - STREAM_WIDTH // 2, SCREEN_CENTER_Y - STREAM_HEIGHT // 2)
+
+    # Resize the frame before displaying it
+    resized_frame = cv2.resize(frame, (STREAM_WIDTH, STREAM_HEIGHT))
+    cv2.imshow("Rock Paper Scissors", resized_frame)
 
     # Handle key presses for menu
     key = cv2.waitKey(1) & 0xFF
